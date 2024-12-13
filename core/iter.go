@@ -44,3 +44,11 @@ func IntVals(lines iter.Seq[string]) iter.Seq[[]int] {
 		}
 	}
 }
+
+func First[T any](items iter.Seq[T]) T {
+	for item := range items {
+		return item
+	}
+	var result T
+	return result
+}
