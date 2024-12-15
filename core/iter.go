@@ -16,7 +16,27 @@ func Filter[T any](vals iter.Seq[T], pred func(v T) bool) iter.Seq[T] {
 				return
 			}
 			if pred(val) {
-				yield(val)
+				if !yield(val) {
+					return
+				}
+			}
+		}
+	}
+}
+
+func Filter2[K any, T any](vals iter.Seq2[K, T], pred func(i K, v T) bool) iter.Seq2[K, T] {
+	return func(yield func(K, T) bool) {
+		next, stop := iter.Pull2(vals)
+		defer stop()
+		for {
+			k, val, ok := next()
+			if !ok {
+				return
+			}
+			if pred(k, val) {
+				if !yield(k, val) {
+					return
+				}
 			}
 		}
 	}
