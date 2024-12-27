@@ -60,7 +60,25 @@ func IntVals(lines iter.Seq[string]) iter.Seq[[]int] {
 				}
 				ints = append(ints, i)
 			}
-			yield(ints)
+			if !yield(ints) {
+				return
+			}
+		}
+	}
+}
+
+func StrVals(items iter.Seq[int]) iter.Seq[string] {
+	return func(yield func(string) bool) {
+		next, stop := iter.Pull(items)
+		defer stop()
+		for {
+			item, ok := next()
+			if !ok {
+				return
+			}
+			if !yield(strconv.Itoa(item)) {
+				return
+			}
 		}
 	}
 }
