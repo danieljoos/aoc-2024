@@ -90,3 +90,29 @@ func First[T any](items iter.Seq[T]) T {
 	var result T
 	return result
 }
+
+func Take[T any](items iter.Seq[T], num int) iter.Seq[T] {
+	return func(yield func(T) bool) {
+		next, stop := iter.Pull(items)
+		defer stop()
+		for i := 0; i < num; i++ {
+			item, ok := next()
+			if !ok || !yield(item) {
+				return
+			}
+		}
+	}
+}
+
+func Take2[T, K any](items iter.Seq2[T, K], num int) iter.Seq2[T, K] {
+	return func(yield func(T, K) bool) {
+		next, stop := iter.Pull2(items)
+		defer stop()
+		for i := 0; i < num; i++ {
+			item1, item2, ok := next()
+			if !ok || !yield(item1, item2) {
+				return
+			}
+		}
+	}
+}
